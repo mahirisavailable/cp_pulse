@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CP Pulse | Competitive Programming Progress Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div>
+          <p class="eyebrow">CP Pulse</p>
+          <h1>Build consistency, not just contest panic.</h1>
+        </div>
+        <div class="header-actions">
+          <button class="ghost-button" id="exportDataBtn" type="button">Export Data</button>
+          <button class="ghost-button" id="importDataBtn" type="button">Import Data</button>
+        </div>
+      </nav>
+
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-text">
+            Track solved problems, topic mastery, contest momentum, and the habits that turn practice into rating gains.
+          </p>
+
+          <div class="hero-stats" id="heroStats"></div>
+
+          <div class="hero-actions">
+            <button class="primary-button" type="button" data-scroll-target="#practiceLog">Log Practice</button>
+            <button class="secondary-button" type="button" data-scroll-target="#topicSection">Review Topics</button>
+          </div>
+        </div>
+
+        <aside class="focus-card">
+          <p class="panel-label">This Week's Focus</p>
+          <h2 id="focusTopic">Graphs + Binary Search</h2>
+          <p id="focusMessage">Push one medium graph problem each day and end the week with a virtual contest.</p>
+          <div class="mini-meter">
+            <div class="mini-meter-fill" id="focusMeter"></div>
+          </div>
+          <div class="focus-foot">
+            <span id="focusPercent">0% ready</span>
+            <span id="streakBadge">0 day streak</span>
+          </div>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section class="dashboard-grid" id="dashboard"></section>
+
+      <section class="panel two-column">
+        <div>
+          <div class="section-heading">
+            <div>
+              <p class="panel-label">Practice Log</p>
+              <h2>Record today's work</h2>
+            </div>
+            <p class="section-note">Small daily entries compound faster than big plans.</p>
+          </div>
+
+          <form class="practice-form" id="practiceLog">
+            <label>
+              Session Name
+              <input type="text" id="sessionName" placeholder="e.g. Weekend CF Upsolve" required>
+            </label>
+            <label>
+              Date
+              <input type="date" id="sessionDate" required>
+            </label>
+            <label>
+              Overall Time
+              <input type="text" id="overallTime" placeholder="e.g. 2h 15m or 135 min" required>
+            </label>
+            <label>
+              Problem Count
+              <input type="number" id="problemCount" min="1" max="12" value="2" required>
+            </label>
+            <div class="problem-builder full-width">
+              <div class="problem-builder-head">
+                <div>
+                  <p class="panel-label">Per Problem Details</p>
+                  <h3>Platform, difficulty and topic tags</h3>
+                </div>
+                <p class="section-note">Use commas for tags like `graphs, bfs, shortest path`.</p>
+              </div>
+              <div id="problemEntries" class="problem-entries"></div>
+            </div>
+            <label class="full-width">
+              Notes
+              <textarea id="sessionNote" rows="4" placeholder="What clicked today? What should be revised tomorrow?"></textarea>
+            </label>
+            <div class="form-actions full-width">
+              <button class="primary-button" id="saveSessionBtn" type="submit">Save Session</button>
+              <button class="secondary-button" id="cancelEditBtn" type="button" hidden>Cancel Edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="session-column">
+          <div class="section-heading">
+            <div>
+              <p class="panel-label">Recent Sessions</p>
+              <h2>Momentum feed</h2>
+            </div>
+          </div>
+          <div class="session-feed" id="sessionFeed"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="topicSection">
+        <div class="section-heading">
+          <div>
+            <p class="panel-label">Topic Mastery</p>
+            <h2>Where your strength is building</h2>
+          </div>
+          <p class="section-note">Update the sliders as you improve to keep your revision plan honest.</p>
+        </div>
+        <div class="topic-grid" id="topicGrid"></div>
+      </section>
+
+      <section class="lower-grid">
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="panel-label">Goals</p>
+              <h2>Target board</h2>
+            </div>
+          </div>
+          <form class="goal-form" id="goalForm">
+            <label>
+              Weekly Problem Goal
+              <input type="number" id="weeklyGoalInput" min="1" required>
+            </label>
+            <label>
+              Rating Goal
+              <input type="number" id="ratingGoalInput" min="1" required>
+            </label>
+            <label>
+              Contest Session Goal
+              <input type="number" id="contestGoalInput" min="1" required>
+            </label>
+            <button class="primary-button" type="submit">Save Goals</button>
+          </form>
+          <div class="goal-grid" id="goalGrid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="panel-label">Revision Loop</p>
+              <h2>What to revisit next</h2>
+            </div>
+          </div>
+          <ul class="revision-list" id="revisionList"></ul>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <template id="statCardTemplate">
+    <article class="stat-card">
+      <p class="stat-label"></p>
+      <h3 class="stat-value"></h3>
+      <p class="stat-detail"></p>
+    </article>
+  </template>
+
+  <datalist id="difficultySuggestions">
+    <option value="800"></option>
+    <option value="1000"></option>
+    <option value="1200"></option>
+    <option value="1400"></option>
+    <option value="1600"></option>
+    <option value="1800"></option>
+    <option value="2000+"></option>
+    <option value="Easy"></option>
+    <option value="Medium"></option>
+    <option value="Hard"></option>
+  </datalist>
+
+  <input type="file" id="importFileInput" accept="application/json" hidden>
+
+  <script src="script.js"></script>
+</body>
+</html>
